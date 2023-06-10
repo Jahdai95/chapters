@@ -3,7 +3,7 @@ import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
 import ShoppingBasketOutlinedIcon from "@material-ui/icons/ShoppingBasketOutlined";
-import ItemList from "../ItemList/ItemList";
+import ItemList from "../ItemListCart/ItemListCart";
 
 const useStyles = makeStyles({
   list: {

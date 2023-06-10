@@ -7,9 +7,15 @@ import Typography from "@material-ui/core/Typography";
 import Badge from "@material-ui/core/Badge";
 import MenuBookOutlinedIcon from "@material-ui/icons/MenuBookOutlined";
 import CartWidget from "../CartWidget/CartWidget";
+import { NavLink, useNavigate } from "react-router-dom";
+import { categories } from "../../mocks/categories";
+
 const useStyles = makeStyles((theme) => ({
   grow: {
     flexGrow: 1,
+  },
+  brand: {
+    cursor: "pointer",
   },
 
   sectionDesktop: {
@@ -31,21 +37,33 @@ const useStyles = makeStyles((theme) => ({
       padding: "1rem 1rem",
       color: "#000000",
       fontWeight: 600,
+      textTransform: "uppercase",
     },
   },
 }));
 
 export default function NavBar() {
   const classes = useStyles();
+  const navigate = useNavigate();
 
   return (
     <div className={classes.grow}>
       <AppBar position="static" color="transparent">
         <Toolbar>
-          <IconButton edge="start" color="inherit" aria-label="open drawer">
-            <MenuBookOutlinedIcon color="secondary" />
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="open drawer"
+            onClick={() => navigate("/")}
+          >
+            <MenuBookOutlinedIcon color="primary" />
           </IconButton>
-          <Typography variant="h6" noWrap>
+          <Typography
+            className={classes.brand}
+            variant="h6"
+            noWrap
+            onClick={() => navigate("/")}
+          >
             CHAPTERS
           </Typography>
 
@@ -53,15 +71,20 @@ export default function NavBar() {
           <div className={classes.categories}>
             <ul>
               <li>
-                <a href="#">STORE</a>
-                <a href="#">GÉNERO</a>
-                <a href="#">AUTORES</a>
+                <NavLink to={"/tienda"}>Tienda</NavLink>
+                {categories.categories.map((item) => {
+                  return (
+                    <NavLink key={item.id} to={`${item.route}/${item.id}`}>
+                      {item.name}
+                    </NavLink>
+                  );
+                })}
               </li>
             </ul>
           </div>
           <div className={classes.sectionDesktop}>
-            <IconButton aria-label="show 4 new mails" color="inherit">
-              <Badge badgeContent={4} color="secondary">
+            <IconButton color="inherit">
+              <Badge badgeContent={4} color="primary">
                 <CartWidget />
               </Badge>
             </IconButton>

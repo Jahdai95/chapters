@@ -1,74 +1,78 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
 import Typography from "@material-ui/core/Typography";
-import ListItemAvatar from "@material-ui/core/ListItemAvatar";
+import Divider from "@material-ui/core/Divider";
+import { useNavigate } from "react-router-dom";
 
-const useStyles = makeStyles({
-  list: {
-    width: 350,
+const useStyles = makeStyles(() => ({
+  containerItem: {
+    display: "flex",
   },
-  fullList: {
-    width: "auto",
+  productImage: {
+    margin: "0 30px 0 0",
   },
-  root: {
-    "& > .MuiIconButton-root:hover": {
-      backgroundColor: "red",
-    },
+  productCaption: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-evenly",
+    cursor: "pointer",
   },
-  containerThumbnail: {
-    marginRight: 10,
+  divider: {
+    margin: "1rem",
   },
-  thumbnail: {
-    width: "80px",
+  bagdeCategory: {
+    background: "#F65D4E",
+    padding: "10px",
+    fontSize: " 0.8rem",
+    borderRadius: "2rem",
+    color: "#ffffff",
   },
-});
+}));
 
 export default function ItemList(props) {
-  const { greeting } = props;
-
   const classes = useStyles();
+  const navigate = useNavigate();
 
   return (
-    <List>
-      <span>{greeting}</span>
-      <ListItem button alignItems="flex-start">
-        <ListItemAvatar>
-          <div className={classes.containerThumbnail}>
-            <img
-              alt="thumbnail"
-              className={classes.thumbnail}
-              src="https://demo2.pavothemes.com/bookory/wp-content/uploads/2022/02/30.jpg"
-            />
-          </div>
-        </ListItemAvatar>
-        <ListItemText
-          primary={
-            <Typography
-              component="p"
-              variant="h6"
-              className={classes.inline}
-              color="textPrimary"
-            >
-              Surrounded by Idiots
-            </Typography>
-          }
-          secondary={
-            <>
-              <Typography
-                component="span"
-                variant="body2"
-                className={classes.inline}
-                color="textPrimary"
+    <>
+      {props.data.map((item, index) => {
+        return (
+          <>
+            <div key={item.id} className={classes.containerItem}>
+              <div className={classes.productImage}>
+                <img width="180" height="250" src={item.image} />
+              </div>
+
+              <div
+                className={classes.productCaption}
+                onClick={() => navigate(`/item/${item.id}`)}
               >
-                1 X $825
-              </Typography>
-            </>
-          }
-        />
-      </ListItem>
-    </List>
+                <Typography variant="h5" component="h2">
+                  {item.title}
+                </Typography>
+
+                <Typography color="textSecondary">{item.author}</Typography>
+
+                <Typography variant="body1" component="p">
+                  {item.caption}
+                </Typography>
+                <Typography variant="h4" component="h4" color="primary">
+                  ${item.price}
+                </Typography>
+
+                <Typography variant="body2" component="p">
+                  <span className={classes.bagdeCategory}>
+                    {item.category[0].name}
+                  </span>
+                </Typography>
+              </div>
+            </div>
+            {index < props.data.length - 1 && (
+              <Divider variant="middle" className={classes.divider} />
+            )}
+          </>
+        );
+      })}
+    </>
   );
 }

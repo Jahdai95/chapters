@@ -1,10 +1,10 @@
 import "./App.css";
-import NavBar from "./components/NavBar/NavBar";
+import MainRouter from "./router/MainRouter/MainRouter";
 
 function App() {
   return (
     <div className="App">
-      <NavBar />
+      <MainRouter />
     </div>
   );
 }
