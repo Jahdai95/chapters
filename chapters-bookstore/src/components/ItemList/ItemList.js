@@ -37,8 +37,8 @@ export default function ItemList(props) {
     <>
       {props.data.map((item, index) => {
         return (
-          <>
-            <div key={item.id} className={classes.containerItem}>
+          <div key={`${item.id}-shop`}>
+            <div className={classes.containerItem}>
               <div className={classes.productImage}>
                 <img width="180" height="250" src={item.image} />
               </div>
@@ -62,7 +62,7 @@ export default function ItemList(props) {
 
                 <Typography variant="body2" component="p">
                   <span className={classes.bagdeCategory}>
-                    {item.category[0].name}
+                    {item.categoryName}
                   </span>
                 </Typography>
               </div>
@@ -70,7 +70,7 @@ export default function ItemList(props) {
             {index < props.data.length - 1 && (
               <Divider variant="middle" className={classes.divider} />
             )}
-          </>
+          </div>
         );
       })}
     </>

@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import { useParams } from "react-router-dom";
 import WidgetCategoryTop from "../WidgetCategoryTop/WidgetCategoryTop";
 import ItemList from "../ItemList/ItemList";
-import { books } from "../../mocks/books";
+import { BooksContext } from "../../context/BooksContext";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const useStyles = makeStyles(() => ({
   containerItemList: {
@@ -15,20 +16,30 @@ const useStyles = makeStyles(() => ({
 export default function ItemListContainer() {
   const classes = useStyles();
   const { categoryId } = useParams();
+  const { books } = useContext(BooksContext);
   const [data, setData] = useState([]);
+
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    setData(books);
+    setLoading(false);
+  }, [books]);
 
   useEffect(() => {
     if (categoryId !== undefined) {
-      const filterBooks = books.books.filter((book) => {
-        return book.category[0].id == categoryId;
+      const filterBooks = books.filter((item) => {
+        return item.categoryId === categoryId;
       });
       setData(filterBooks);
     } else {
-      setData(books.books);
+      setData(books);
     }
-  }, [categoryId]);
+    setLoading(false);
+  }, [categoryId, books]);
 
-  return (
+  return loading ? (
+    <CircularProgress />
+  ) : (
     <>
       <WidgetCategoryTop id={categoryId} />
       <Grid

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -9,6 +9,7 @@ import MenuBookOutlinedIcon from "@material-ui/icons/MenuBookOutlined";
 import CartWidget from "../CartWidget/CartWidget";
 import { NavLink, useNavigate } from "react-router-dom";
 import { categories } from "../../mocks/categories";
+import { CartContext } from "../../context/CartContext";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -45,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
 export default function NavBar() {
   const classes = useStyles();
   const navigate = useNavigate();
-
+  const { totalItems } = useContext(CartContext);
   return (
     <div className={classes.grow}>
       <AppBar position="static" color="transparent">
@@ -84,7 +85,7 @@ export default function NavBar() {
           </div>
           <div className={classes.sectionDesktop}>
             <IconButton color="inherit">
-              <Badge badgeContent={4} color="primary">
+              <Badge badgeContent={totalItems} color="primary">
                 <CartWidget />
               </Badge>
             </IconButton>

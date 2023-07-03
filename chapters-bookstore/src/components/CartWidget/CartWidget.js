@@ -3,7 +3,7 @@ import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
 import ShoppingBasketOutlinedIcon from "@material-ui/icons/ShoppingBasketOutlined";
-import ItemList from "../ItemListCart/ItemListCart";
+import Checkout from "../ItemListCart/Checkout";
 
 const useStyles = makeStyles({
   list: {
@@ -47,7 +47,7 @@ export default function CartWidget() {
       role="presentation"
       onKeyDown={toggleDrawer(anchor, false)}
     >
-      <ItemList greeting={"Esto es una prop"} />
+      <Checkout />
     </div>
   );
 

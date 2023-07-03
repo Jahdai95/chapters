@@ -1,15 +1,17 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
-import { books } from "../../mocks/books";
 import { useParams } from "react-router-dom";
 import WidgetCategoryTop from "../WidgetCategoryTop/WidgetCategoryTop";
 import ShoppingBasketOutlinedIcon from "@material-ui/icons/ShoppingBasketOutlined";
 import { Divider } from "@material-ui/core";
 import { useCounter } from "../../hooks/useCounter";
+import { getFirestore, getDoc, doc } from "firebase/firestore";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import { CartContext } from "../../context/CartContext";
 
 const useStyles = makeStyles(() => ({
   containerImageProduct: {
@@ -50,12 +52,34 @@ export default function ItemDetailContainer() {
   const classes = useStyles();
   const { itemId } = useParams();
   const { increment, decrement, value } = useCounter();
+  const [loading, setLoading] = useState(false);
+  const { addItem } = useContext(CartContext);
 
-  const book = books.books.find((book) => book.id == itemId);
+  const [book, setBook] = useState([]);
 
-  return (
+  useEffect(() => {
+    setLoading(true);
+    const db = getFirestore();
+    const book = doc(db, "books", itemId);
+    getDoc(book)
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          setBook({ id: snapshot.id, ...snapshot.data() });
+        }
+      })
+      .catch(() => {
+        console.log("Ocurrió un error llamando al detalle del producto");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
+
+  return loading ? (
+    <CircularProgress />
+  ) : (
     <>
-      <WidgetCategoryTop id={book.category[0].id} />
+      <WidgetCategoryTop id={book.categoryId} />
       <Grid
         container
         direction="row"
@@ -76,9 +100,7 @@ export default function ItemDetailContainer() {
               <Typography variant="h5" component="h5" color="textSecondary">
                 {book.author}
               </Typography>
-              <span className={classes.bagdeCategory}>
-                {book.category[0].name}
-              </span>
+              <span className={classes.bagdeCategory}>{book.categoryName}</span>
             </div>
 
             <Typography variant="h6" component="p">
@@ -97,21 +119,35 @@ export default function ItemDetailContainer() {
               color="primary"
               aria-label="text primary button group"
             >
-              <Button disabled={value <= 1} onClick={decrement}>
+              <Button
+                disabled={value <= 1}
+                onClick={() => {
+                  decrement();
+                }}
+              >
                 -
               </Button>
               <span className={classes.alingValue}>{value}</span>
-              <Button disabled={value >= 5} onClick={increment}>
+              <Button
+                disabled={value >= 5}
+                onClick={() => {
+                  increment();
+                }}
+              >
                 +
               </Button>
               <Button
+                onClick={() => {
+                  addItem({ book: book, quantity: value });
+                }}
+                disabled={value <= 0}
                 variant="contained"
                 color="primary"
                 size="large"
                 className={classes.button}
                 startIcon={<ShoppingBasketOutlinedIcon />}
               >
-                Comprar
+                Añadir al carrito
               </Button>
             </ButtonGroup>
           </div>
